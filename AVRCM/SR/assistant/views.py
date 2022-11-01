@@ -7,6 +7,18 @@ import wikipedia
 import wolframalpha
 import pyttsx3
 import speech_recognition as beta
+import datetime
+import json
+import operator
+import os
+from urllib import request
+import webbrowser
+import wikipedia
+import pyjokes
+import wolframalpha
+import pyttsx3
+from urllib.request import urlopen
+
 
 
 # Create your views here.
@@ -21,34 +33,143 @@ def speak(audio):
     engine.say(audio)
     engine.runAndWait()
 
+def wishMe():
+    hour = int(datetime.datetime.now().hour)
+    if hour >= 0 and hour < 12:
+        speak("Good Morning Sir !")
+
+    elif hour >= 12 and hour < 18:
+        speak("Good Afternoon Sir !")
+
+    else:
+        speak("Good Evening Sir !")
+
+    assname = ("Giya 1 point o")
+    speak("I am your Assistant")
+
+
 def assistant(request):
-    return render(request,'base.html')
+    cmd = 'Give the command'
+    if request.method == 'POST':
+        cmd = request.POST['cmd']
+        res = evaluate(cmd)
+    return render(request,'base.html',{'cmd':cmd,'res':res})
 
-def takeCommand():
-    r = beta.Recognizer()
-    my_mic_device = beta.Microphone(device_index=1)
+def evaluate(query):
+    query.lower()
+# Youtube
+    if 'open youtube' in query or 'open YouTube' in query:
+        # speak("Here you go to Youtube\n")
+        webbrowser.open("youtube.com")
+        # os.system('cls')
+# Wikipedia
+    elif 'wikipedia' in query or 'Wikipedia' in query :
+        # speak('Searching Wikipedia...')
+        query = query.replace("wikipedia", "")
+        results = wikipedia.summary(query, sentences=3)
+        # speak("According to Wikipedia")
+        # speak(results)
+        return (results)
+        # os.system('cls')
+# Google
+    elif 'open google' in query:
+            # speak("Here you go to Google\n")
+            webbrowser.open("google.com")
+            # os.system('cls')
+# Stack Overflow
+    elif 'open stack overflow' in query:
+        # speak("Here you go to Stack Over flow.Happy coding")
+        webbrowser.open("stackoverflow.com")
+        # os.system('cls')
+# Instagram
+    elif 'open instagram' in query:
+        # speak("Here you go to Instagram")
+        webbrowser.open("instagram.com")
+        # os.system('cls')
+# Joke
+    elif 'joke' in query:
+        joke = pyjokes.get_joke()
+        speak(joke)
+        return (joke)
+        # os.system('cls')
+# Time
+    elif 'the time' in query:
+        strTime = datetime.datetime.now().strftime("%m-%d-%Y %H:%M:%S")
+        # speak(f"Sir, the time is {strTime}")
+        return(strTime)
+        # print('\n')
+# Calculate
+    elif "calculate" in query:
+        app_id = "U946LA-262EX4V97V"
+        client = wolframalpha.Client(app_id)
+        indx = query.lower().split().index('calculate')
+        query = query.split()[indx + 1:]
+        res = client.query(' '.join(query))
+        answer = next(res.results).text
+        # speak("The answer is " + answer)
+        return answer
+# What
+    elif 'what' in query:
+        app_id = "U946LA-262EX4V97V"
+        client = wolframalpha.Client(app_id)
+        indx = query.lower().split().index('what')
+        query = query.split()[indx + 1:]
+        res = client.query(' '.join(query))
+        answer = next(res.results).text
+        # speak("The answer is " + answer)
+        return answer
+# Who
+    elif 'who' in query:
+        app_id = "U946LA-262EX4V97V"
+        client = wolframalpha.Client(app_id)
+        indx = query.lower().split().index('who')
+        query = query.split()[indx + 1:]
+        res = client.query(' '.join(query))
+        answer = next(res.results).text
+        # speak("The answer is " + answer)
+        return answer
+# Where
+    elif 'where' in query:
+        app_id = "U946LA-262EX4V97V"
+        client = wolframalpha.Client(app_id)
+        indx = query.lower().split().index('where')
+        query = query.split()[indx + 1:]
+        res = client.query(' '.join(query))
+        answer = next(res.results).text
+        return answer
 
-    with my_mic_device as source:
-        print("Listining!!")
-        r.pause_threshold = 1
-        r.adjust_for_ambient_noise(source)
-        audio = r.listen(source)
-    try:
-        print("Recognizing...")
-        query = r.recognize_google(audio, language='en-in')
+    elif 'when' in query:
+        app_id = "U946LA-262EX4V97V"
+        client = wolframalpha.Client(app_id)
+        indx = query.lower().split().index('when')
+        query = query.split()[indx + 1:]
+        res = client.query(' '.join(query))
+        answer = next(res.results).text
+        return answer
 
-    except Exception as e:
-        print(e)
-        print("Unable to Recognize your voice.")
-        return None
+    elif 'why' in query:
+        app_id = "U946LA-262EX4V97V"
+        client = wolframalpha.Client(app_id)
+        indx = query.lower().split().index('how')
+        query = query.split()[indx + 1:]
+        res = client.query(' '.join(query))
+        answer = next(res.results).text
+        return answer
+    
+    elif 'search' in query or 'play' in query:
+        query = query.replace("search", "")
+        query = query.replace("play", "")
+        webbrowser.open(query)
 
-    return query
-
+    elif "who i am" in query:
+        return ("If you talk then definitely your human.")
+    # return None
 
 def test(request):
     res = 'Give the command'
     if (request.method == "POST"):
         cmd = request.POST['cmd']
-    return render(request,'testing.html',{'res':res})
+        
+    return render(request,'testing.html',{'res':res,'cmd':cmd,})
 
 

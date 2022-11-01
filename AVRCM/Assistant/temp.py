@@ -51,7 +51,7 @@ def clear(): return os.system('cls')
 
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[1].id)
+engine.setProperty('voice', voices[0].id)
 
 # print(eval_binary_expr(*(my_string.split())))
 if __name__ == '__main__':
@@ -64,12 +64,12 @@ if __name__ == '__main__':
 
             if not query is None:
                 print(query)
-
+# Youtube
                 if 'open youtube' in query or 'open YouTube' in query:
                     speak("Here you go to Youtube\n")
                     webbrowser.open("youtube.com")
-                    print('\n')
-
+                    os.system('cls')
+# Wikipedia
                 elif 'wikipedia' in query or 'Wikipedia' in query :
                     speak('Searching Wikipedia...')
                     query = query.replace("wikipedia", "")
@@ -77,25 +77,29 @@ if __name__ == '__main__':
                     speak("According to Wikipedia")
                     print(results)
                     speak(results)
-
+                    os.system('cls')
+# Google
                 elif 'open google' in query:
                         speak("Here you go to Google\n")
                         webbrowser.open("google.com")
-                        print('\n')
-
+                        os.system('cls')
+# Stack Overflow
                 elif 'open stackoverflow' in query:
                     speak("Here you go to Stack Over flow.Happy coding")
                     webbrowser.open("stackoverflow.com")
-                    print('\n')
-
+                    os.system('cls')
+# Instagram
                 elif 'open instagram' in query:
                     speak("Here you go to Instagram")
                     webbrowser.open("instagram.com")
-                    print('\n')
-                
+                    os.system('cls')
+# Jokes  
                 elif 'joke' in query:
-                    speak(pyjokes.get_joke())
-                
+                    joke = pyjokes.get_joke()
+                    print(joke)
+                    speak(joke)
+                    os.system('cls')
+# News
                 elif 'news' in query:
                     try:
                         jsonObj = urlopen(

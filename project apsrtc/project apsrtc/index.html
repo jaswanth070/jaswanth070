@@ -9,11 +9,16 @@
 </head>
 <body>
     
-    <div class="voice_to_text">
-        <h1>Voice to text convertor</h1>
-        <textarea  id="convert_text"></textarea>
-        <button id="click_to_convert">Voice to text</button>
-    </div>
+    <form method="post" action="/">
+        <div class="voice_to_text">
+            <h1>Voice to text convertor</h1>
+            <textarea  id="convert_text" name="cmd"></textarea>
+            <button type="submit">submit</button>
+        </div>
+    </form>
+    <button id="click_to_convert">Voice to text</button>
+
+  
 
 
     <script src="script.js" type="text/javascript"></script>
