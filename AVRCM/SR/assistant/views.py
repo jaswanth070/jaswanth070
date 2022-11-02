@@ -69,9 +69,28 @@ def evaluate(query):
         # speak("Here you go to Youtube\n")
         webbrowser.open("youtube.com")
 
-# self describing
+# Pulihora
     elif 'who are you' in query:
         return "I'm your assistant Ziya"
+
+    elif "why you came to world" in query or "how you came to world" in query or "why you came to this world" in query or "how you came to this world" in query:
+            return ("Thanks to Jaswanth and his team. further It's a secret")
+
+    elif "will you be my girl friend" in query:
+            return ("I'm not sure about, may be you should give me some time")
+    
+    elif "i love you" in query:
+        return("Sorry I have a Boyfriend")
+
+    elif "what's your name" in query or "What is your name" in query:
+            return "Ny friends call me Giya"
+
+    elif 'how are you' in query:
+            return ("I am fine, Thank you! How are you, Sir")
+
+    elif 'fine' in query or "good" in query:
+            return("It's good to know that your fine")
+
 
 # Search
     elif 'search' in query or 'play' in query or "what's" in query or "what is" in query or "what are" in query:
@@ -152,8 +171,7 @@ def evaluate(query):
         # speak = Dispatch("SAPI.Spvoice")
         # speak.Speak(results)
         return results
-# Weather
-    elif "weather" in query:
+
         # Enter your API key here
         api_key = "Your_API_Key"
 
@@ -300,7 +318,7 @@ def evaluate(query):
     elif  "find" in query:
         app_id = "U946LA-262EX4V97V"
         client = wolframalpha.Client(app_id)
-        indx = query.lower().split().index('calculate')
+        indx = query.lower().split().index('find')
         query = query.split()[indx + 1:]
         res = client.query(' '.join(query))
         answer = next(res.results).text
@@ -367,23 +385,7 @@ def evaluate(query):
     # elif "who i am" in query or 'who am i':
     #     return ("If you talk then definitely your human.")
     
-    elif "why you came to world" in query:
-            return ("Thanks to Jaswanth. further It's a secret")
-
-    elif "will you be my girl friend" in query:
-            return ("I'm not sure about, may be you should give me some time")
     
-    elif "i love you" in query:
-        return("Sorry I have a Boyfriend")
-
-    elif "what's your name" in query or "What is your name" in query:
-            return "Ny friends call me Giya"
-
-    elif 'how are you' in query:
-            return ("I am fine, Thank you! How are you, Sir")
-
-    elif 'fine' in query or "good" in query:
-            return("It's good to know that your fine")
 
     return None
 
