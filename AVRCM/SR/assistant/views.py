@@ -1,3 +1,4 @@
+
 from django.shortcuts import render,HttpResponse,redirect
 import datetime
 import operator
@@ -12,15 +13,18 @@ import json
 import operator
 import os
 import sympy as mat
+from sympy.abc import x,y
+from sympy import diff, sin, exp
 from urllib import request
 import webbrowser
 import wikipedia
 import pyjokes
 import wolframalpha
+import requests 
 from googlesearch import search
 import pyttsx3
 from urllib.request import urlopen
-
+from .cymath_api import slove
 
 
 # Create your views here.
@@ -60,21 +64,21 @@ def assistant(request):
 
 def evaluate(query):
     query.lower()
-
 # Youtube
     if 'open youtube' in query or 'open YouTube' in query:
         # speak("Here you go to Youtube\n")
         webbrowser.open("youtube.com")
-        # os.system('cls')
+
 # self describing
     elif 'who are you' in query:
         return "I'm your assistant Ziya"
 
 # Search
-    elif 'search' in query or 'play' in query or "what's" in query or "what is" in query:
+    elif 'search' in query or 'play' in query or "what's" in query or "what is" in query or "what are" in query:
         query = query.replace("search for", "")
         query = query.replace("what's", "")
         query = query.replace("what is", "")
+        query = query.replace("what are", "")
         query = query.replace("search", "")
         query = query.replace("google", "")
         query = query.replace("play", "")
@@ -114,66 +118,174 @@ def evaluate(query):
         # os.system('cls')
 # News
     elif 'news' in query:
-                    try:
-                        jsonObj = urlopen(
-                            '''https://newsapi.org / v1 / articles?source = the-times-of-india&sortBy = top&apiKey =\\times of India Api key\\''')
-                        data = json.load(jsonObj)
-                        i = 1
+        # BBC news api
+        # following query parameters are used
+        # source, sortBy and apiKey
+        query_params = {
+          "source": "bbc-news",
+          "sortBy": "top",
+          "apiKey": "4dbc17e007ab436fb66416009dfb59a8"
+        }
+        main_url = " https://newsapi.org/v1/articles"
+    
+        # fetching data in json format
+        res = requests.get(main_url, params=query_params)
+        open_bbc_page = res.json()
+    
+        # getting all articles in a string article
+        article = open_bbc_page["articles"]
+    
+        # empty list which will
+        # contain all trending news
+        results = []
 
-                        speak('here are some top news from the times of india')
-                        print('''=============== TIMES OF INDIA ============''' + '\n')
+        for ar in article:
+            results.append(ar["title"])
 
-                        for item in data['articles']:
-                        
-                            print(str(i) + '. ' + item['title'] + '\n')
-                            print(item['description'] + '\n')
-                            speak(str(i) + '. ' + item['title'] + '\n')
-                            i += 1
-                    except Exception as e:
-                    
-                        print(str(e))
+        # for i in range(len(results)):
+
+        #     # printing all trending news
+        #     print(i + 1, results[i])
+    
+        #to read the news out loud for us
+        # from win32com.client import Dispatch
+        # speak = Dispatch("SAPI.Spvoice")
+        # speak.Speak(results)
+        return results
 # Weather
-    # elif "weather" in query:
-    #     # Google Open weather website
-    #     # to get API of Open weather
-    #     api_key = "404f1521f7ee16569f6a1d8875393578"
-    #     base_url = "http://api.openweathermap.org / data / 2.5 / weather?"
-    #     speak(" City name ")
-    #     print("City name : ")
-    #     city_name = takeCommand()
-    #     complete_url = base_url + "appid =" + api_key + "&q =" + city_name
-    #     response = request.Request(complete_url)
-    #     x = response.json()
+    elif "weather" in query:
+        # Enter your API key here
+        api_key = "Your_API_Key"
 
-    #     if x["code"] != "404":
-    #         y = x["main"]
-    #         current_temperature = y["temp"]
-    #         current_pressure = y["pressure"]
-    #         current_humidiy = y["humidity"]
-    #         z = x["weather"]
-    #         weather_description = z[0]["description"]
-    #         print(" Temperature (in kelvin unit) = " + str(current_temperature)+"\n atmospheric pressure (in hPa unit) ="+str(
-    #             current_pressure) + "\n humidity (in percentage) = " + str(current_humidiy) + "\n description = " + str(weather_description))
-# Loactions
-    elif "where is" in query:
-                    query = query.replace("where is", "")
-                    location = query
-                    # speak("User asked to Locate")
-                    # speak(location)
-                    webbrowser.open("https://www.google.nl / maps / place/" + location + "")
+        # base_url variable to store url
+        base_url = "http://api.openweathermap.org/data/2.5/weather?"
+
+        # Give city name
+        city_name = input("Enter city name : ")
+
+        # complete_url variable to store
+        # complete url address
+        complete_url = base_url + "appid=" + api_key + "&q=" + city_name
+
+        # get method of requests module
+        # return response object
+        response = requests.get(complete_url)
+
+        # json method of response object
+        # convert json format data into
+        # python format data
+        x = response.json()
+
+        # Now x contains list of nested dictionaries
+        # Check the value of "cod" key is equal to
+        # "404", means city is found otherwise,
+        # city is not found
+        if x["cod"] != "404":
+        
+            # store the value of "main"
+            # key in variable y
+            y = x["main"]
+
+            # store the value corresponding
+            # to the "temp" key of y
+            current_temperature = y["temp"]
+
+            # store the value corresponding
+            # to the "pressure" key of y
+            current_pressure = y["pressure"]
+
+            # store the value corresponding
+            # to the "humidity" key of y
+            current_humidity = y["humidity"]
+
+            # store the value of "weather"
+            # key in variable z
+            z = x["weather"]
+
+            # store the value corresponding
+            # to the "description" key at
+            # the 0th index of z
+            weather_description = z[0]["description"]
+
+            # print following values
+            print(" Temperature (in kelvin unit) = " +
+                            str(current_temperature) +
+                  "\n atmospheric pressure (in hPa unit) = " +
+                            str(current_pressure) +
+                  "\n humidity (in percentage) = " +
+                            str(current_humidity) +
+                  "\n description = " +
+                            str(weather_description))
+
+        else:
+            print(" City Not Found ")
 # Time
     elif 'the time' in query:
         strTime = datetime.datetime.now().strftime("%m-%d-%Y %H:%M:%S")
         # speak(f"Sir, the time is {strTime}")
         return(strTime)
         # print('\n')
+
 # Simplify
     elif 'simplify' in query:
         query = query.replace("simplify", "")
-        query = query.replace(" ", "")
-        query = query.replace("power", "**")
-        
-        return mat.simplify(query)
+        query = query.replace("power", "^")
+        query = query.replace("square", "^2")
+        query = query.replace("into", "*")
+        query = query.replace("plus", "+")
+        query = query.replace("minus", "-")
+        query = query.replace("by", "/")
+
+        res =  slove(query)
+
+        if res is None:
+            query = query.replace("^2", "**2")
+            query = query.replace("^", "*")
+            query = query.replace(" ", "")
+            res = mat.sympify(query)
+            if not res is None:
+                return res.subs(query[0],2)
+            else:
+                return "something went wrong"
+        else:
+            return res
+
+# Factorize
+    elif 'factorize' in query:
+        try:
+            query = query.replace("factorize", "")
+            query = query.replace("power", "**")
+            query = query.replace("square", "**2")
+            query = query.replace("into", "*")
+            query = query.replace("plus", "+")
+            query = query.replace("minus", "-")
+            query = query.replace("by", "/")
+            query = query.replace(" ", "")
+
+            res = mat.factor(query,x)
+            return res
+        except:
+            return "Something went wrong"
+
+# Derivative
+    elif 'derivative' in query:
+        try:
+            query = query.replace("derivative of", "")
+            query = query.replace("derivative", "")
+            query = query.replace("power", "**")
+            query = query.replace("square", "**2")
+            query = query.replace("into", "*")
+            query = query.replace("plus", "+")
+            query = query.replace("minus", "-")
+            query = query.replace("by", "/")
+            query = query.replace(" ", "")
+
+            res = mat.diff(query,x)
+            return res
+        except:
+            return "Something went wrong"
+
+
 # Calculate
     elif "calculate" in query :
         app_id = "U946LA-262EX4V97V"
@@ -194,15 +306,15 @@ def evaluate(query):
         answer = next(res.results).text
         # speak("The answer is " + answer)
         return answer
-# What
-    elif 'what' in query:
-        app_id = "U946LA-262EX4V97V"
-        client = wolframalpha.Client(app_id)
-        indx = query.lower().split().index('what')
-        query = query.split()[indx + 1:]
-        res = client.query(' '.join(query))
-        answer = next(res.results).text
-        # speak("The answer is " + answer)
+# # What
+#     elif 'what' in query:
+#         app_id = "U946LA-262EX4V97V"
+#         client = wolframalpha.Client(app_id)
+#         indx = query.lower().split().index('what')
+#         query = query.split()[indx + 1:]
+#         res = client.query(' '.join(query))
+#         answer = next(res.results).text
+#         # speak("The answer is " + answer)
         return answer
 # Who
     elif 'who' in query:
