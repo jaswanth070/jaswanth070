@@ -11,6 +11,7 @@ import datetime
 import json
 import operator
 import os
+import sympy as mat
 from urllib import request
 import webbrowser
 import wikipedia
@@ -59,11 +60,28 @@ def assistant(request):
 
 def evaluate(query):
     query.lower()
+
 # Youtube
     if 'open youtube' in query or 'open YouTube' in query:
         # speak("Here you go to Youtube\n")
         webbrowser.open("youtube.com")
         # os.system('cls')
+# self describing
+    elif 'who are you' in query:
+        return "I'm your assistant Ziya"
+
+# Search
+    elif 'search' in query or 'play' in query or "what's" in query or "what is" in query:
+        query = query.replace("search for", "")
+        query = query.replace("what's", "")
+        query = query.replace("what is", "")
+        query = query.replace("search", "")
+        query = query.replace("google", "")
+        query = query.replace("play", "")
+        webbrowser.open(query)
+
+        return "Here what I found on Internet"
+
 # Wikipedia
     elif 'wikipedia' in query or 'Wikipedia about' in query :
         # speak('Searching Wikipedia...')
@@ -149,8 +167,25 @@ def evaluate(query):
         # speak(f"Sir, the time is {strTime}")
         return(strTime)
         # print('\n')
+# Simplify
+    elif 'simplify' in query:
+        query = query.replace("simplify", "")
+        query = query.replace(" ", "")
+        query = query.replace("power", "**")
+        
+        return mat.simplify(query)
 # Calculate
-    elif "calculate" in query:
+    elif "calculate" in query :
+        app_id = "U946LA-262EX4V97V"
+        client = wolframalpha.Client(app_id)
+        indx = query.lower().split().index('calculate')
+        query = query.split()[indx + 1:]
+        res = client.query(' '.join(query))
+        answer = next(res.results).text
+        # speak("The answer is " + answer)
+        return answer
+# Find
+    elif  "find" in query:
         app_id = "U946LA-262EX4V97V"
         client = wolframalpha.Client(app_id)
         indx = query.lower().split().index('calculate')
@@ -206,15 +241,7 @@ def evaluate(query):
         res = client.query(' '.join(query))
         answer = next(res.results).text
         return answer
-# Search
-    elif 'search' in query or 'play' in query :
-        query = query.replace("search for", "")
-        query = query.replace("search", "")
-        query = query.replace("google", "")
-        query = query.replace("play", "")
-        webbrowser.open(query)
 
-        return "Here what I found on Internet"
 # Google search
     elif 'google' in query:
         query = query.replace("google", "")
