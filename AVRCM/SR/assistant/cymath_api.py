@@ -95,6 +95,6 @@ def GCF(query):
     except:
         return None
 
-que = input()
-res = GCF(que)
-print(res)
+# que = input()
+# res = GCF(que)
+# print(res)
